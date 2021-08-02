@@ -6,9 +6,10 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     function hideTabContent() {
         tabContent.forEach((item) => {
-            item.style.display = 'none';
-            // item.classList.add('hide');
-            // item.classList.remove('show');
+            // item.style.display = 'none';
+            // substitute in-line to class 
+            item.classList.add('hide');
+            item.classList.remove('show');
         });
 
         tabs.forEach((item) => {
@@ -17,16 +18,14 @@ window.addEventListener('DOMContentLoaded', () =>{
     }
 
     function showTabContent(i=0) {
-        tabContent[i].style.display = 'block';
-        // tabContent.classList.add('show');
-        // tabContent.classList.add('hide');
+        // tabContent[i].style.display = 'block';
+        // substitute in-line to class 
+        tabContent[i].classList.add('show');
+        tabContent[i].classList.remove('hide');
         tabs[i].classList.add('tabheader__item_active');
     }
-
     hideTabContent();
     showTabContent();
-
-
     tabsParent.addEventListener('click', (event) => {
         const target = event.target;
 
@@ -34,7 +33,6 @@ window.addEventListener('DOMContentLoaded', () =>{
 
             tabs.forEach((item, i) => {
                 if (target === item) {
-                    console.log(i);
                     hideTabContent();
                     showTabContent(i);
                 }
@@ -42,6 +40,5 @@ window.addEventListener('DOMContentLoaded', () =>{
         }
 
     });
-
 });
 
