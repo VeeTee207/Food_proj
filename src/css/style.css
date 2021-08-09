@@ -209,7 +209,7 @@ a {
     width: 280px;
     padding: 35px 30px;
     background-color: #fff;
-    color: blue;
+    /* color: blue; */
 }
 
 .tabheader h3 {
