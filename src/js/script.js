@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     // Timer ----- sales counter
 
-    const deadline = '2021-08-15'; // set at tth day from now
+    const deadline = '2022-08-15'; // set at tth day from now
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -177,6 +177,48 @@ window.addEventListener('DOMContentLoaded', () =>{
         ".menu .container",
         // 'menu__item',
     ).render();
+
+
+
+   // Modal window to 
+
+   const modalTrigger = document.querySelectorAll('[data-modal]'),
+   modal = document.querySelector('.modal'),
+   modalCloseBtn = document.querySelector('[data-close]');
+
+modalTrigger.forEach(btn => {
+   btn.addEventListener('click', function() {
+       modal.classList.add('show');
+       modal.classList.remove('hide');
+
+    //    modal.classList.toggle('show'); // option toogle
+       document.body.style.overflow = 'hidden';
+   });
+});
+
+function closeModal() {
+   modal.classList.add('hide');
+   modal.classList.remove('show');
+//    modal.classList.toggle('show'); // option toogle
+   document.body.style.overflow = '';
+}
+
+modalCloseBtn.addEventListener('click', closeModal);
+
+modal.addEventListener('click', (e) => {
+   if (e.target === modal) {
+       closeModal();
+   }
+});
+
+// close modal window by ESC key,  keyDown - any key press
+document.addEventListener('keydown', (e) => {
+   if (e.code === "Escape" && modal.classList.contains('show')) { 
+       closeModal();
+   }
+});
+
+
 
 });
 
