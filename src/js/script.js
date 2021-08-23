@@ -180,20 +180,22 @@ window.addEventListener('DOMContentLoaded', () =>{
 
 
 
-   // Modal window to 
+   // Modal window to buttons Связаться с нами
 
-   const modalTrigger = document.querySelectorAll('[data-modal]'),
+   const btnCallUs = document.querySelectorAll('[data-modal]'),
    modal = document.querySelector('.modal'),
    modalCloseBtn = document.querySelector('[data-close]');
 
-modalTrigger.forEach(btn => {
-   btn.addEventListener('click', function() {
-       modal.classList.add('show');
-       modal.classList.remove('hide');
-
+function openModal() {
+    modal.classList.add('show');
+    modal.classList.remove('hide'); 
     //    modal.classList.toggle('show'); // option toogle
-       document.body.style.overflow = 'hidden';
-   });
+    document.body.style.overflow = 'hidden';
+    clearInterval(modalTimerId);    // to prevent second opening  
+}
+
+btnCallUs.forEach(btn => {
+   btn.addEventListener('click', openModal);
 });
 
 function closeModal() {
@@ -218,7 +220,18 @@ document.addEventListener('keydown', (e) => {
    }
 });
 
+const modalTimerId = setTimeout(openModal, 5000);
 
+function showModalByScroll() {
+// check if user get bottom off the page
+    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+        openModal();
+        // to make sure it done only once not many
+        window.removeEventListener('scroll', showModalByScroll);
+    }
+}
+
+window.addEventListener('scroll', showModalByScroll);
 
 });
 
