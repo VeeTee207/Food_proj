@@ -1,3 +1,4 @@
+
 window.addEventListener('DOMContentLoaded', () =>{
     const tabs = document.querySelectorAll('.tabheader__item'),
           tabContent = document.querySelectorAll('.tabcontent'),
@@ -44,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     // Timer ----- sales counter
 
-    const deadline = '2022-08-15'; // set at tth day from now
+    const deadline = '2022-01-15'; // set at tth day from now
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -175,64 +176,154 @@ window.addEventListener('DOMContentLoaded', () =>{
         'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
         21,
         ".menu .container",
-        // 'menu__item',
     ).render();
 
 
 
-   // Modal window to buttons Связаться с нами
 
-   const btnCallUs = document.querySelectorAll('[data-modal]'),
+
+
+   // Modal window to buttons Связаться с нами
+   const modalTrigger = document.querySelectorAll('[data-modal]'),
    modal = document.querySelector('.modal'),
    modalCloseBtn = document.querySelector('[data-close]');
 
-function openModal() {
-    modal.classList.add('show');
-    modal.classList.remove('hide'); 
-    //    modal.classList.toggle('show'); // option toogle
-    document.body.style.overflow = 'hidden';
-    clearInterval(modalTimerId);    // to prevent second opening  
-}
-
-btnCallUs.forEach(btn => {
-   btn.addEventListener('click', openModal);
-});
-
-function closeModal() {
-   modal.classList.add('hide');
-   modal.classList.remove('show');
-//    modal.classList.toggle('show'); // option toogle
-   document.body.style.overflow = '';
-}
-
-modalCloseBtn.addEventListener('click', closeModal);
-
-modal.addEventListener('click', (e) => {
-   if (e.target === modal) {
-       closeModal();
-   }
-});
-
-// close modal window by ESC key,  keyDown - any key press
-document.addEventListener('keydown', (e) => {
-   if (e.code === "Escape" && modal.classList.contains('show')) { 
-       closeModal();
-   }
-});
-
-const modalTimerId = setTimeout(openModal, 5000);
-
-function showModalByScroll() {
-// check if user get bottom off the page
-    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
-        openModal();
-        // to make sure it done only once not many
-        window.removeEventListener('scroll', showModalByScroll);
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide'); 
+        //    modal.classList.toggle('show'); // option toogle
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);    // to prevent second opening  
     }
-}
 
-window.addEventListener('scroll', showModalByScroll);
+    modalTrigger.forEach(btn => {
+    btn.addEventListener('click', openModal);
+    });
+
+    function closeModal() {
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    //    modal.classList.toggle('show'); // option toogle
+    document.body.style.overflow = '';
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+    });
+
+    // close modal window by ESC key,  keyDown - any key press
+    document.addEventListener('keydown', (e) => {
+    if (e.code === "Escape" && modal.classList.contains('show')) { 
+        closeModal();
+    }
+    });
+
+    const modalTimerId = setTimeout(openModal, 5000);
+
+    function showModalByScroll() {
+    // check if user get bottom off the page
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            // to make sure it done only once not many
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
+
+
+       // forms
+       const forms = document.querySelectorAll('form');
+       const message = {
+           loading: 'img/form/spinner.svg',
+        //    loading: 'Loading ...',
+   
+           success: 'Thanks! We will contact you',
+           failure: 'Something goes wrong ...',
+       };
+       forms.forEach(item => {
+           postData(item);
+       });
+   
+       // we use 2 formats - 1)formData, 2) JSON. The type of format depends on format needed for backEnd
+       function postData(form) {
+           form.addEventListener('submit', (e) => {
+               e.preventDefault();
+   
+               let statusMessage = document.createElement('img');
+               statusMessage.src = message.loading;
+               statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+                `;
+               form.insertAdjacentElement('afterend', statusMessage);
+   
+               const request = new XMLHttpRequest();
+               request.open('POST', 'server.php');
+               // data format formData does not need header - no setRequestHeader
+               request.setRequestHeader('Content-type', 'apllcatiom/json');
+   
+               const formData = new FormData(form);
+   
+               // working with JSON data now
+               const object = {};
+               formData.forEach(function(value, key){
+                   object[key] = value;
+               });
+   
+               const json = JSON.stringify(object);
+               request.send(json);
+   
+               // request.send(formData);
+   
+               request.addEventListener('load', ()=> {
+                   if (request.status === 200) {
+                       console.log(request.response);
+                       showThanksModal(message.success);
+                       form.reset();
+                       statusMessage.remove();
+                       setTimeout(() => {
+                           statusMessage.remove();
+                       }, 5000);
+                   }
+                   else {
+                       showThanksModal(message.failure);
+                   }
+               });
+           });  
+       }
+
+       function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+        
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
+
 
 });
+
+
+
 
 
