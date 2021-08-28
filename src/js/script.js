@@ -7,8 +7,6 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     function hideTabContent() {
         tabContent.forEach((item) => {
-            // item.style.display = 'none';
-            // substitute in-line to class 
             item.classList.add('hide');
             item.classList.remove('show');
         });
@@ -19,8 +17,6 @@ window.addEventListener('DOMContentLoaded', () =>{
     }
 
     function showTabContent(i=0) {
-        // tabContent[i].style.display = 'block';
-        // substitute in-line to class 
         tabContent[i].classList.add('show');
         tabContent[i].classList.remove('hide');
         tabs[i].classList.add('tabheader__item_active');
@@ -82,7 +78,7 @@ window.addEventListener('DOMContentLoaded', () =>{
             seconds = timer.querySelector('#seconds'),
             timeInterval = setInterval(updateClock, 1000);
 
-        updateClock();  // elemonate screen blinkink while loading page
+        updateClock();  // eleminate screen blinkink while loading page
 
         function updateClock() {
             const t = getTimeRemaining(endtime);
@@ -91,12 +87,6 @@ window.addEventListener('DOMContentLoaded', () =>{
             minutes.textContent = getZero(t.minutes);
             seconds.textContent = getZero(t.seconds);
             
-            // either way is ok  --- textContent  or innerHTML
-            // days.innerHTML = getZero(t.days);
-            // hours.innerHTML = getZero(t.hours);
-            // minutes.innerHTML = getZero(t.minutes);
-            // seconds.innerHTML = getZero(t.seconds);
-
             if (t.total <= 0) {
                 clearInterval(timeInterval);
             }
@@ -180,9 +170,6 @@ window.addEventListener('DOMContentLoaded', () =>{
 
 
 
-
-
-
    // Modal window to buttons Связаться с нами
    const modalTrigger = document.querySelectorAll('[data-modal]'),
    modal = document.querySelector('.modal'),
@@ -203,7 +190,6 @@ window.addEventListener('DOMContentLoaded', () =>{
     function closeModal() {
     modal.classList.add('hide');
     modal.classList.remove('show');
-    //    modal.classList.toggle('show'); // option toogle
     document.body.style.overflow = '';
     }
 
@@ -253,7 +239,7 @@ window.addEventListener('DOMContentLoaded', () =>{
        function postData(form) {
            form.addEventListener('submit', (e) => {
                e.preventDefault();
-   
+                // spinnner
                let statusMessage = document.createElement('img');
                statusMessage.src = message.loading;
                statusMessage.style.cssText = `
@@ -261,39 +247,33 @@ window.addEventListener('DOMContentLoaded', () =>{
                 margin: 0 auto;
                 `;
                form.insertAdjacentElement('afterend', statusMessage);
-   
-               const request = new XMLHttpRequest();
-               request.open('POST', 'server.php');
-               // data format formData does not need header - no setRequestHeader
-               request.setRequestHeader('Content-type', 'apllcatiom/json');
-   
+
                const formData = new FormData(form);
    
-               // working with JSON data now
+            //    working with JSON data now
                const object = {};
                formData.forEach(function(value, key){
                    object[key] = value;
                });
    
-               const json = JSON.stringify(object);
-               request.send(json);
-   
-               // request.send(formData);
-   
-               request.addEventListener('load', ()=> {
-                   if (request.status === 200) {
-                       console.log(request.response);
-                       showThanksModal(message.success);
-                       form.reset();
-                       statusMessage.remove();
-                       setTimeout(() => {
-                           statusMessage.remove();
-                       }, 5000);
-                   }
-                   else {
-                       showThanksModal(message.failure);
-                   }
-               });
+               fetch('server.php', {
+                    method: "POST",
+                    headers: {
+                        'Content-type': 'apllcatiom/json',
+                    },
+                    body: JSON.stringify(object),
+                })
+                .then(data => data.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.success);
+                    statusMessage.remove();
+                }).catch(() => {
+                    showThanksModal(message.failure);
+                }).finally(() => {
+                    form.reset();
+                });
+
            });  
        }
 
@@ -320,8 +300,11 @@ window.addEventListener('DOMContentLoaded', () =>{
         }, 4000);
     }
 
-
 });
+
+
+
+
 
 
 
