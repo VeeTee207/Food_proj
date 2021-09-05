@@ -95,87 +95,6 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     setClock('.timer', deadline);
 
-    // set clases for cards menu
-    class MenuCard {
-        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
-            this.src = src;
-            this.alt = alt;
-            this.title = title;
-            this.descr = descr;
-            this.price = price;
-            this.classes = classes;
-            this.parent = document.querySelector(parentSelector); // mean -- .menu .container
-            this.transfer = 2.5; // USD to BYR rate
-            this.changeToBYR(); 
-        }
-        
-// USD to BYR conveter
-        changeToBYR() {
-            this.price = this.price * this.transfer; 
-        }
-        render() {
-            const element = document.createElement('div');
-            if (this.classes.length === 0) {
-                this.classes = "menu__item";
-                element.classList.add(this.classes);
-            } else {
-                this.classes.forEach(className => element.classList.add(className));
-            }
-
-            element.innerHTML = `
-                <img src=${this.src} alt=${this.alt}>
-                <h3 class="menu__item-subtitle">${this.title}</h3>
-                <div class="menu__item-descr">${this.descr}</div>
-                <div class="menu__item-divider"></div>
-                <div class="menu__item-price">
-                    <div class="menu__item-cost">Цена:</div>
-                    <div class="menu__item-total"><span>${this.price}</span> BYR/день</div>
-                </div>
-            `;
-            this.parent.append(element);
-        }
-    }
-
-    const getResource = async (url) => {
-        const res = await fetch(url)
-            if (!res.ok) {
-                throw new Error(`Could not fetch ${url}, ststus: ${res.status}`);
-
-            }
-        return await res.json();
-    };
-        //options 1
-    getResource('http://localhost:3000/menu')
-    .then(data => {
-        data.forEach(({img, altimg, title, descr, price}) => {
-            new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
-        });
-    });
-
-    
-    // options 2
-    // getResource('http://localhost:3000/menu')
-    // .then(data => {createCard(data)});
-
-    // function createCard(data) {
-    //     data.forEach(({img, altimg, title, descr, price}) => {
-    //         const element = document.createElement('div');
-    //         price = price *2.5 //  2.5 currncy rate
-    //         element.classList.add('menu__item');
-    //         element.innerHTML = `
-    //             <img src=${img} alt=${altimg}>
-    //             <h3 class="menu__item-subtitle">${title}</h3>
-    //             <div class="menu__item-descr">${descr}</div>
-    //             <div class="menu__item-divider"></div>
-    //             <div class="menu__item-price">
-    //                 <div class="menu__item-cost">Цена:</div>
-    //                 <div class="menu__item-total"><span>${price}</span> BYR/день</div>
-    //             </div>
-    //         `;
-    //         document.querySelector('.menu .container ').append(element);
-    //     });
-    // }
-
 
    // Modal window to buttons Связаться с нами
    const modalTrigger = document.querySelectorAll('[data-modal]'),
@@ -227,6 +146,110 @@ window.addEventListener('DOMContentLoaded', () =>{
     }
 
     window.addEventListener('scroll', showModalByScroll);
+
+
+    // set clases for cards menu
+    class MenuCard {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.classes = classes;
+            this.parent = document.querySelector(parentSelector); // mean -- .menu .container
+            this.transfer = 2.5; // USD to BYR rate
+            this.changeToBYR(); 
+        }
+        
+// USD to BYR conveter
+        changeToBYR() {
+            this.price = this.price * this.transfer; 
+        }
+        render() {
+            const element = document.createElement('div');
+            if (this.classes.length === 0) {
+                this.classes = "menu__item";
+                element.classList.add(this.classes);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
+
+            element.innerHTML = `
+                <img src=${this.src} alt=${this.alt}>
+                <h3 class="menu__item-subtitle">${this.title}</h3>
+                <div class="menu__item-descr">${this.descr}</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>${this.price}</span> BYR/день</div>
+                </div>
+            `;
+            this.parent.append(element);
+        }
+    }
+
+    // async function getResource (url) {
+    //     let res = await fetch(url);
+
+    //         if (!res.ok) {
+    //             throw new Error(`Could not fetch ${url}, ststus: ${res.status}`);
+
+    //         }
+    //     return await res.json();
+    // };
+
+    async function getResource(url) {
+        let res = await fetch(url);
+    
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+    
+        return await res.json();
+    }
+
+        //options 1
+    getResource('http://localhost:3000/menu')
+    .then(data => {
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+        });
+    });
+
+    
+        // option 3 - added library axios -   
+        // axios.get('http://localhost:3000/menu')
+        // .then(data => {
+        //     data.data.forEach(({img, altimg, title, descr, price}) => {
+        //         new MenuCard(img, altimg, title, descr, price, ".menu .container").render();    
+        //     });
+        // });
+
+
+    
+    // options 2
+    // getResource('http://localhost:3000/menu')
+    // .then(data => {createCard(data)});
+
+    // function createCard(data) {
+    //     data.forEach(({img, altimg, title, descr, price}) => {
+    //         const element = document.createElement('div');
+    //         price = price *2.5 //  2.5 currncy rate
+    //         element.classList.add('menu__item');
+    //         element.innerHTML = `
+    //             <img src=${img} alt=${altimg}>
+    //             <h3 class="menu__item-subtitle">${title}</h3>
+    //             <div class="menu__item-descr">${descr}</div>
+    //             <div class="menu__item-divider"></div>
+    //             <div class="menu__item-price">
+    //                 <div class="menu__item-cost">Цена:</div>
+    //                 <div class="menu__item-total"><span>${price}</span> BYR/день</div>
+    //             </div>
+    //         `;
+    //         document.querySelector('.menu .container ').append(element);
+    //     });
+    // }
 
 
        // forms
@@ -309,11 +332,53 @@ window.addEventListener('DOMContentLoaded', () =>{
         }, 4000);
     }
 
-    fetch('http://localhost:3000/menu')
-    .then(data => data.json())
-    .then(res => console.log(res));
-});
 
+    // slider 
+    const slides = document.querySelectorAll('.offer__slide'),
+          prev = document.querySelector('.offer__slider-prev'),
+          next = document.querySelector('.offer__slider-next'),
+          current = document.querySelector('#current'),
+          total = document.querySelector('#total');
+    let slideIndex = 1;
+
+    showSlides(slideIndex);
+
+    if (slides.length < 10) {
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = `${slides.length}`;
+    }
+
+    function showSlides(n) {
+        if (n > slides.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach( item => item.style.display = 'none');
+        slides[slideIndex-1].style.display = 'block';
+
+        if (slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = `${slideIndex}`;
+        }
+    }
+
+    function plusSlides(n) {
+        showSlides(slideIndex +=n);   
+    }
+
+    prev.addEventListener('click', function() {
+        plusSlides(-1);
+    });
+
+    next.addEventListener('click', function(){
+        plusSlides(1);
+    });
+});
 
 
 
